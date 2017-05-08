@@ -12,7 +12,7 @@ SRC += ./alsa.c
 SRC += ./memory.c
 SRC += ./net.c
 
-OBJS = $(SRC: .c = .o)
+OBJS = $(SRC:.c=.o)
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
