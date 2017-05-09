@@ -1,5 +1,5 @@
-#include <stdint.h>
 #include <inttypes.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -14,10 +14,56 @@ struct cpu_load
         uint64_t idle;
 };
 
-int get_cpu_usage(void)
+int32_t get_cpu_freq(void)
 {
         FILE *fp;
-        int cpu_usage;
+        char buffer[256];
+        char *match;
+        size_t bytes_read;
+        int32_t clock_speed;
+
+        fp = fopen("/proc/cpuinfo", "r");
+        bytes_read = fread(buffer, 1, sizeof(buffer), fp);
+        fclose(fp);
+
+        buffer[bytes_read] = '\0';
+
+        match = strstr(buffer, "cpu MHz");
+        if(match == NULL)
+                return -1;
+
+        sscanf(match, "cpu MHz : %" SCNi32, &clock_speed);
+
+        return (clock_speed);
+}
+
+int32_t get_cpu_temp(void)
+{
+        FILE *fp;
+        uint32_t temperature;
+
+        fp = fopen(CPU_TEMP_FILE, "r");
+
+        if(fp == NULL)
+        {
+                fprintf(stderr, "CPU_TEMP_FILE config wrong");
+                temperature = -1;
+        }
+        else
+        {
+                fscanf(fp, "%" SCNi32, &temperature);
+                temperature /= 1000;
+        }
+
+        fclose(fp);
+
+        return (temperature);
+}
+
+int32_t get_cpu_usage(void)
+{
+        FILE *fp;
+        int32_t cpu_usage;
         uint64_t tmp;
 
         static struct cpu_load load_old;
@@ -46,41 +92,3 @@ int get_cpu_usage(void)
 
         return (cpu_usage);
 }
-
-uint32_t get_cpu_temp(void)
-{
-        FILE *fp;
-        uint32_t temperature;
-
-        fp = fopen("/sys/class/hwmon/hwmon1/temp3_input", "r");
-
-        fscanf(fp, "%" SCNu32, &temperature);
-
-        fclose(fp);
-
-        return (temperature / 1000);
-}
-
-int get_cpu_freq(void)
-{
-        FILE *fp;
-        char buffer[256];
-        char *match;
-        size_t bytes_read;
-        int clock_speed;
-
-        fp = fopen("/proc/cpuinfo", "r");
-        bytes_read = fread(buffer, 1, sizeof(buffer), fp);
-        fclose(fp);
-
-        buffer[bytes_read] = '\0';
-
-        match = strstr(buffer, "cpu MHz");
-        if(match == NULL)
-                return -1;
-
-        sscanf(match, "cpu MHz : %d", &clock_speed);
-
-        return clock_speed;
-}
-

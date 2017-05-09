@@ -36,9 +36,9 @@ int main(int argc, const char *argv[])
                 t = time(NULL);
                 tm = *localtime(&t);
 
-                sprintf(msg, "freq: %dMHz "
-                             "temp: %" PRIu32 "C "
-                             "cpu: %d%% "
+                sprintf(msg, "freq: %" PRIi32 "MHz "
+                             "temp: %" PRIi32 "C "
+                             "cpu: %" PRIi32 "%% "
                              "ram: %" PRIi64 "MB "
                              "U: %" PRIu32 "kB D: %" PRIu32 "kB "
                              "V: %" PRIi64 "%% "
