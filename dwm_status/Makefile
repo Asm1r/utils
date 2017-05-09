@@ -23,3 +23,4 @@ all: $(OBJS)
 .PHONY: clean
 clean: 
 	rm  *.o
+	rm $(PROJ)
