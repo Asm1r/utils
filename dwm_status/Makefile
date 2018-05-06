@@ -5,12 +5,13 @@ CC = $(CC_PREFIX)clang
 
 LDFLAGS= -lasound -lX11
 CFLAGS= -std=c99 -Wall -Wextra -Os
+SRC_DIR = ./src
 
-SRC += ./main.c
-SRC += ./cpu.c
-SRC += ./alsa.c
-SRC += ./memory.c
-SRC += ./net.c
+SRC += $(SRC_DIR)/main.c
+SRC += $(SRC_DIR)/cpu.c
+SRC += $(SRC_DIR)/alsa.c
+SRC += $(SRC_DIR)/memory.c
+SRC += $(SRC_DIR)/net.c
 
 OBJS = $(SRC:.c=.o)
 
@@ -22,5 +23,5 @@ all: $(OBJS)
 
 .PHONY: clean
 clean: 
-	rm  *.o
+	rm  $(SRC_DIR)/*.o
 	rm $(PROJ)
